@@ -1,0 +1,31 @@
+app-id: io.github.nacho.rascacielos
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: rascacielos
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+  env:
+    CARGO_NET_OFFLINE: 'true'
+    CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+modules:
+  - name: rascacielos
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/nacho/rascacielos.git
+        commit: e923024c24a0839485e23b8065927a4b18319d67
+      # cargo-sources.json needs to be placed before the
+      # copying, otherwise the config will just be empty
+      - cargo-sources.json
+      - type: shell
+        commands:
+          - mkdir -p .cargo
+          - cp cargo/config .cargo/config.toml
